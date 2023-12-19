@@ -2,12 +2,19 @@ name: Auto sync with upstream
 on:
   schedule:
     - cron: '0 8 * * 5'
+  workflow_dispatch:
+
 jobs:
-  build:
+  repo-sync:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3.4.0
-    - uses: vesoft-inc/auto-sync-repos@master
+    - uses: actions/checkout@v3
       with:
-        from_repo: coolsnowwolf/lede
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: false
+    - name: repo-sync
+      uses: repo-sync/github-sync@v2
+      with:
+        source_repo: "coolsnowwolf/lede"
+        source_branch: "master"
+        destination_branch: "master"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
